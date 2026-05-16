@@ -93,6 +93,18 @@ function Drawer({ open, onClose, title, subtitle, children }) {
 }
 window.Drawer = Drawer;
 
+function getRecordSourceUrl(kind, record, source) {
+  if (!record) return source && source.url ? source.url : null;
+  if (record.record_url) return record.record_url;
+  if (record.report_url) return record.report_url;
+  if (record.url) return record.url;
+  if (kind === 'ntsb' && record.event_id) {
+    return `https://www.ntsb.gov/_layouts/ntsb.aviation/brief.aspx?ev_id=${encodeURIComponent(record.event_id)}&key=1`;
+  }
+  return source && source.url ? source.url : null;
+}
+window.getRecordSourceUrl = getRecordSourceUrl;
+
 // ─────────────────────────────────────────────────────────────
 // RecordDetailDrawer — generic record detail (NTSB / SDR / AIDS)
 // ─────────────────────────────────────────────────────────────
@@ -100,6 +112,7 @@ function RecordDetailDrawer({ open, onClose, kind, record }) {
   if (!record) return <Drawer open={open} onClose={onClose} />;
   const fields = buildFieldList(kind, record);
   const source = record.source ? window.getSourceMeta(record.source.key) : null;
+  const sourceUrl = getRecordSourceUrl(kind, record, source);
 
   const titles = {
     ntsb: 'NTSB accident record',
@@ -130,14 +143,22 @@ function RecordDetailDrawer({ open, onClose, kind, record }) {
               whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
             }}>{source.name}</span>
           </div>
-          <button style={{
-            background: 'transparent', border: 'none', padding: 4,
-            display: 'flex', alignItems: 'center', gap: 4,
-            color: C.textMute, cursor: 'pointer',
-            fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: 0.6, textTransform: 'uppercase',
-          }}>
-            Open <Icon name="external" size={11} color={C.textMute} />
-          </button>
+          {sourceUrl && (
+            <a
+              href={sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Open official source record"
+              aria-label="Open official source record"
+              style={{
+                background: 'transparent', border: 'none', padding: 4,
+                display: 'flex', alignItems: 'center', gap: 4,
+                color: C.textMute, cursor: 'pointer', textDecoration: 'none',
+                fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: 0.6, textTransform: 'uppercase',
+              }}>
+              Open <Icon name="external" size={11} color={C.textMute} />
+            </a>
+          )}
         </div>
       )}
 
