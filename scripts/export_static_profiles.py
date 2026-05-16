@@ -160,6 +160,8 @@ def fetch_ntsb_records(conn) -> tuple[dict[str, list[dict[str, Any]]], dict[str,
               a.aircraft_damage,
               a.registration_number_raw,
               a.source_file as aircraft_source_file,
+              e.investigation_number,
+              e.accident_number,
               e.event_date,
               e.location_city,
               e.location_state,
@@ -295,10 +297,15 @@ def ntsb_payloads(
         if key in seen:
             continue
         seen.add(key)
+        ntsb_number = row.get("investigation_number") or row.get("accident_number")
         payloads.append(
             compact(
                 {
                 "event_id": row.get("event_id"),
+                "ntsb_number": ntsb_number,
+                "investigation_number": row.get("investigation_number"),
+                "accident_number": row.get("accident_number"),
+                "record_url": f"https://web.ntsb.gov/investigations/?ntsbnumber={ntsb_number}" if ntsb_number else None,
                 "event_date": iso_date(row.get("event_date")),
                 "event_type": row.get("investigation_type"),
                 "location": ", ".join(
@@ -518,24 +525,20 @@ def main() -> None:
         "--max-sdr-records",
         type=int,
         default=12,
-        help="Maximum enriched SDR records embedded per aircraft. Counts still reflect all records.",
+        help="Maximum embedded SDR records per profile. Use 0 for no cap.",
     )
-    parser.add_argument(
-        "--shard-length",
-        type=int,
-        default=3,
-        help="Number of normalized N-number characters used for profile shard filenames.",
-    )
-    parser.add_argument("--no-clean", action="store_true", help="Do not delete existing output first.")
+    parser.add_argument("--no-clean", action="store_true", help="Do not delete the output directory first.")
+    parser.add_argument("--shard-length", type=int, default=2, help="N-number prefix length per shard.")
     args = parser.parse_args()
 
+    max_sdr_records = None if args.max_sdr_records == 0 else args.max_sdr_records
     manifest = export_static_profiles(
         output_dir=Path(args.output),
-        max_sdr_records=args.max_sdr_records,
+        max_sdr_records=max_sdr_records,
         clean=not args.no_clean,
         shard_length=args.shard_length,
     )
-    print(json.dumps(manifest, indent=2))
+    print(json.dumps(manifest, indent=2, default=json_default)[:4000])
 
 
 if __name__ == "__main__":
