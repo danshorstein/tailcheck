@@ -1,0 +1,6 @@
+{
+  "tail_numbers": [
+    { "n_number": "N100", "expected": "registry_match" },
+    { "n_number": "N10000", "expected": "registry_match" }
+  ]
+}

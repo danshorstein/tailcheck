@@ -1,0 +1,25 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+
+.env
+*.db
+*.sqlite
+*.sqlite3
+
+aircraft_records.db
+raw_data/
+raw_data/**/*.zip
+raw_data/**/*.csv
+raw_data/**/*.mdb
+raw_data/**/*.txt
+processed_data/source_snapshots/
+processed_data/demo_profiles/*.json
+
+# Exclude generated frontend data profiles to avoid massive repository size
+frontend/public/data/profiles/
+# Exclude macOS and AI agent files
+.DS_Store
+.gemini/
+

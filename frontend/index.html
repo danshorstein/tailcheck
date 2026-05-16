@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>TailCheck — Aircraft Public-Records Profile</title>
+
+  <!-- Fonts: DM Sans (UI) + JetBrains Mono (data) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --font-sans: 'DM Sans', -apple-system, system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    }
+    html, body {
+      margin: 0; padding: 0;
+      background: #06080B;
+      color: #E7EBF1;
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+    * { box-sizing: border-box; }
+    button { font-family: inherit; -webkit-tap-highlight-color: transparent; }
+    input { font-family: inherit; }
+    /* Custom scrollbar inside the phone */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.06);
+      border-radius: 99px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.12); }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- React + Babel (pinned) -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <!-- Data first -->
+  <script src="data.js"></script>
+
+  <!-- iOS frame + tweaks panel -->
+  <script type="text/babel" src="ios-frame.jsx"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+
+  <!-- Shared primitives -->
+  <script type="text/babel" src="components.jsx"></script>
+
+  <!-- Screens -->
+  <script type="text/babel" src="home.jsx"></script>
+  <script type="text/babel" src="camera.jsx"></script>
+  <script type="text/babel" src="profile.jsx"></script>
+  <script type="text/babel" src="drawer.jsx"></script>
+
+  <!-- Desktop layout (uses primitives + drawer above) -->
+  <script type="text/babel" src="desktop.jsx"></script>
+
+  <!-- App shell (mounts) -->
+  <script type="text/babel" src="app.jsx"></script>
+</body>
+</html>
