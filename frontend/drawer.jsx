@@ -93,13 +93,24 @@ function Drawer({ open, onClose, title, subtitle, children }) {
 }
 window.Drawer = Drawer;
 
+function getNtsbNumber(record) {
+  return record && (record.ntsb_number || record.investigation_number || record.accident_number || record.ntsb_no);
+}
+window.getNtsbNumber = getNtsbNumber;
+
 function getRecordSourceUrl(kind, record, source) {
   if (!record) return source && source.url ? source.url : null;
   if (record.record_url) return record.record_url;
   if (record.report_url) return record.report_url;
   if (record.url) return record.url;
-  if (kind === 'ntsb' && record.event_id) {
-    return `https://www.ntsb.gov/_layouts/ntsb.aviation/brief.aspx?ev_id=${encodeURIComponent(record.event_id)}&key=1`;
+  if (kind === 'ntsb') {
+    const ntsbNumber = getNtsbNumber(record);
+    if (ntsbNumber) {
+      return `https://web.ntsb.gov/investigations/?ntsbnumber=${encodeURIComponent(ntsbNumber)}`;
+    }
+    if (record.event_id) {
+      return `https://www.ntsb.gov/_layouts/ntsb.aviation/brief.aspx?ev_id=${encodeURIComponent(record.event_id)}&key=1`;
+    }
   }
   return source && source.url ? source.url : null;
 }
@@ -219,6 +230,7 @@ function buildFieldList(kind, r) {
         r.narrative_summary && { label: 'Narrative summary', value: r.narrative_summary },
       ].filter(Boolean),
       rows: [
+        { k: 'NTSB #',      v: getNtsbNumber(r) },
         { k: 'Event ID',    v: r.event_id },
         { k: 'Date',        v: window.formatDate(r.event_date) },
         { k: 'Event type',  v: r.event_type, mono: false },
